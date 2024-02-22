@@ -1,4 +1,5 @@
 const fs = require("fs");
+const runner = require("../../utils/runner");
 
 const IN = fs.readFileSync("7.in", "utf8");
 const re = /(\d? ?\w+ \w+(?= bag))/gi;
@@ -31,5 +32,6 @@ function solve2(bag = "shiny gold") {
   return bags[bag].reduce((acc, [n, bag]) => acc + n + n * solve2(bag), 0);
 }
 
-console.log(Object.keys(bags).filter((b) => solve1(b)).length - 1);
-console.log(solve2());
+const helper = (bags) => bags.filter((b) => solve1(b)).length - 1;
+runner(1, helper, Object.keys(bags));
+runner(2, solve2, "shiny gold");

@@ -1,4 +1,5 @@
 const fs = require("fs");
+const runner = require("../../utils/runner");
 
 const IN = fs.readFileSync("3.in", "utf8");
 
@@ -18,7 +19,7 @@ function solve(row, col) {
   }
   return ans;
 }
-console.log(solve(1, 3));
+
 const slopes = [
   [1, 1],
   [1, 3],
@@ -27,4 +28,7 @@ const slopes = [
   [2, 1],
 ];
 
-console.log(slopes.reduce((acc, curr) => acc * solve(...curr), 1));
+const pt2 = (slopes) => slopes.reduce((acc, curr) => acc * solve(...curr), 1);
+
+runner(1, solve, 1, 3);
+runner(2, pt2, slopes);

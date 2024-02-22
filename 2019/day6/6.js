@@ -1,17 +1,12 @@
-const fs = require("fs");
+const runner = require("../../utils/runner");
+const parseInput = require("./parseInput");
 
-const IN = fs.readFileSync("6.in", "utf8");
+function pt1(node, graph) {
+  if (!graph[node]) return 0;
+  return graph[node].reduce((acc, curr) => acc + pt1(curr, graph) + 1, 0);
+}
 
-const graph = IN.trim()
-  .split("\n")
-  .reduce((acc, curr) => {
-    const [a, b] = curr.split(")");
-    acc[a] ? acc[a].push(b) : (acc[a] = [b]);
-    acc[b] ? acc[b].push(a) : (acc[b] = [a]);
-    return acc;
-  }, {});
-
-function dfs(start, end) {
+function dfs(start, end, graph) {
   const Q = [[start, 0]];
   const visited = new Set();
   let minDist = Infinity;
@@ -32,21 +27,8 @@ function dfs(start, end) {
   return minDist - 2;
 }
 
-console.log(dfs("YOU", "SAN"));
-
-// const visited = new Set();
-
-// function solve(start, end) {
-//   if (start === end) return 0;
-//   visited.add(start);
-//   let minDist = Infinity;
-//   for (const nbr of graph[start]) {
-//     if (!visited.has(nbr)) {
-//       const dist = solve(nbr, end) + 1;
-//       minDist = Math.min(minDist, dist);
-//     }
-//   }
-//   return minDist;
-// }
-
-// console.log(solve("YOU", "SAN") - 2);
+const G = parseInput();
+const nodes = Object.keys(G);
+const helper = (nodes) => nodes.reduce((acc, node) => acc + pt1(node, G), 0);
+runner(1, helper, nodes);
+runner(2, dfs, "YOU", "SAN", parseInput(true));
