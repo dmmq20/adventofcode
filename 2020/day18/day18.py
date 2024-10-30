@@ -21,14 +21,15 @@ def solve(expr, pt2=False):
     operands, operators = deque([]), deque([])
     while expr:
         token = expr.popleft()
-        if token == ")": 
-            break
-        elif token == "(":
-            operands.append(solve(expr, pt2))
-        elif token in ["+", "*"]:
-            operators.append(token)
-        else:
-            operands.append(int(token))
+        match token:
+            case ")": 
+                break
+            case "(":
+                operands.append(solve(expr, pt2))
+            case "*" | "+":
+                operators.append(token)
+            case _:
+                operands.append(int(token))
     return evaluate(operands, operators, pt2)
 
 data = [line.strip() for line in fileinput.input()]
