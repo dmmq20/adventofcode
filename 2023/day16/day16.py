@@ -39,4 +39,5 @@ pt2 = sum([[
     ((edge, i), (0, -1)), 
     ((i, edge), (1, 0))] for i in range(len(data))], [])
     
-print(max(solve(data, *s) for s in pt2))
+print("Part 1: ", solve(data, (0, 0)))
+print("Part 2: ", max(solve(data, *s) for s in pt2))
