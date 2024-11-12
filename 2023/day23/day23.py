@@ -146,8 +146,8 @@ def solve(grid, init_cost, start, end, done=set(), pt2=False):
     nbrs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     ans = [0]
     
+    cost, (r, c) = Q.pop()
     while Q:
-        cost, (r, c) = Q.pop()
         if (r, c) == end:
             if cost > 6000:
                 print(cost)
