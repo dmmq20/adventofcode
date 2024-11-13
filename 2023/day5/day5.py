@@ -1,5 +1,6 @@
 import re, fileinput
 
+
 data = "".join(fileinput.input())
 seeds, *maps = data.strip().split("\n\n")
 seeds = [int(n) for n in re.findall("\\d+", seeds)]
