@@ -12,7 +12,7 @@ for line in fileinput.input():
             D[allergen] &= ingredients
         else:
             D[allergen] = ingredients.copy()
-            
+
 bad = set().union(*D.values())
 pt1 = sum(v for k, v in C.items() if k not in bad)
 
