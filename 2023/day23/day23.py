@@ -1,39 +1,68 @@
 import fileinput
+from collections import deque
 
-def solve(grid, init_cost, start, end, done=set()):
-    R, C = len(grid), len(grid[0])
-    Q = [(init_cost, start)]
-    nbrs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-    ans = [0]
-    
+maze = [list(row.strip()) for row in fileinput.input()]
+R, C = len(maze), len(maze[0])
+start = (0, maze[0].index("."))
+end = (R - 1, maze[-1].index("."))
+poi = {start, end}
+
+dirs = {
+    "^": [(-1, 0)],
+    "v": [(1, 0)],
+    ">": [(0, 1)],
+    "<": [(0, -1)],
+    ".": [(0, 1), (0, -1), (1, 0), (-1, 0)]
+}
+
+for r in range(R):
+    for c in range(C):
+        if maze[r][c] == "#": continue
+        nbrs = 0
+        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            rr, cc = dr+r, dc+c
+            if 0<=rr<R and 0<=cc<C and maze[rr][cc] != "#":
+                nbrs += 1
+        if nbrs > 2:
+            poi.add((r, c))
+
+def bfs(start, poi, pt2=False):
+
+    dists = dict()
+    Q = deque([(0, start)])
+    seen = set()
+    nbrs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
     while Q:
-        cost, (r, c) = Q.pop()
-        if (r, c) == end:
-            ans.append(cost)
-        if (r, c) in done:
+        dist, (r, c) = Q.popleft()
+        if ((r, c)) in seen:
             continue
-        done.add((r, c))
-        adj = list(filter(lambda x: (0 <= x[0] < R and 0 <= x[1] < C) and grid[x[0]][x[1]] != '#', [(r+dr, c+dc) for dr,dc in nbrs]))
-        for (rr, cc) in adj:
-            match grid[rr][cc]:
-                case '>' if c < cc:
-                    if len(adj) > 1:
-                        ans.append(solve(grid, cost+1, (rr, cc), end, done.copy()))
-                        done.add((rr, cc))
-                    else:
-                        Q.append((cost+1, (rr, cc)))
-                case 'v' if r < rr:
-                    if len(adj) > 1:
-                        ans.append(solve(grid, cost+1, (rr, cc), end, done.copy()))
-                    else:
-                        Q.append((cost+1, (rr, cc)))
-                case '.':
-                    Q.append((cost+1, (rr, cc)))
-                case _:
-                    pass
-                
-    return max(ans)
-    
-grid = [list(row.strip()) for row in fileinput.input()]
-end = (len(grid)-1, len(grid[0]) - 2)
-print(solve(grid, 0, (0, 1), end))
+        seen.add((r, c))
+
+        if (r, c) in poi and (r, c) != start:
+            dists[(r, c)] = dist
+            continue
+
+        d = nbrs if pt2 else dirs[maze[r][c]]
+        for dr, dc in d:
+            rr, cc = dr+r, dc+c
+            if 0<=rr<R and 0<=cc<C and maze[rr][cc] != "#":
+                Q.append((dist + 1, (rr, cc)))
+
+    return dists
+
+def solve(start, pt2=False):
+    G = {(r, c): bfs((r, c), poi, pt2) for r,c in poi - {end}}
+    def dfs(start, path):
+        if start == end:
+            return 0
+        ans = -float('inf')
+        for pos, dist in G[start].items():
+            if pos not in path:
+                path.add(start)
+                ans = max(ans, dist + dfs(pos, path))
+                path.remove(start)
+        return ans
+    return dfs(start, set())
+
+print(solve(start))
+print(solve(start, True))
