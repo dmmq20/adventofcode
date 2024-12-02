@@ -14,5 +14,5 @@ def pt2(row):
     return any(solve(row[:i] + row[i+1:]) for i in range(len(row)))
 
 data = [[int(n) for n in line.split()] for line in fileinput.input()]
-print(len(list(filter(solve, data))))
-print(len(list(filter(pt2, data))))
+print(sum(solve(row) for row in data))
+print(sum(pt2(row) for row in data))
