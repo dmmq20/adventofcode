@@ -8,9 +8,7 @@ def invalid_id(id, pt2=False):
     id = str(id)
     k = len(id) // 2
     if not pt2:
-        if len(id) %2 != 0:
-            return False
-        return id[:k] == id[k:]
+        return len(id) % 2 == 0 and id[:k] == id[k:]
         
     for i in range(1, k+1):
         chunk = id[:i]
