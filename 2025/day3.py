@@ -10,11 +10,8 @@ def solve(bank, max_len):
             return ""
         take = bank[idx] + _solve(idx+1, curr_len+1, max_len)
         skip = _solve(idx+1, curr_len, max_len)
-        if skip:
-            DP[(idx, curr_len)] = str(max(int(take), int(skip)))
-            return DP[(idx, curr_len)]
-        DP[(idx, curr_len)] = take
-        return DP[(idx, curr_len)]  
+        DP[(idx, curr_len)] = str(max(int(take), int(skip))) if skip else take
+        return DP[(idx, curr_len)]
         
     return _solve(0, 0, max_len)
 
