@@ -36,15 +36,15 @@ def dfs(start):
     return splits
 
 @cache
-def solve(row, col, dir):    
+def solve(row, col):
     if row == len(IN) and 0<=col<len(IN):
         return 1
     if not (0<=row<len(IN) and 0<=col<len(IN)):
         return 0
     if IN[row][col] == "^":
-        return solve(row+1, col-1, "L") + solve(row+1, col+1, "R")
+        return solve(row+1, col-1) + solve(row+1, col+1)
     else:
-        return solve(row+1, col, dir)
+        return solve(row+1, col)
 
-pt1, pt2 = dfs(S), solve(S[0], S[1], "D")
+pt1, pt2 = dfs(S), solve(S[0], S[1])
 print(pt1, pt2)
